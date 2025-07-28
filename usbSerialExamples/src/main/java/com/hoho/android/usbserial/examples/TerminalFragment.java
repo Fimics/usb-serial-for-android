@@ -46,8 +46,8 @@ public class TerminalFragment extends Fragment implements SerialInputOutputManag
     private enum UsbPermission { Unknown, Requested, Granted, Denied }
 
     private static final String INTENT_ACTION_GRANT_USB = BuildConfig.APPLICATION_ID + ".GRANT_USB";
-    private static final int WRITE_WAIT_MILLIS = 2000;
-    private static final int READ_WAIT_MILLIS = 2000;
+    private static final int WRITE_WAIT_MILLIS = 20000;
+    private static final int READ_WAIT_MILLIS = 20000;
 
     private int deviceId, portNum, baudRate;
     private boolean withIoManager;
@@ -271,23 +271,48 @@ public class TerminalFragment extends Fragment implements SerialInputOutputManag
         usbSerialPort = null;
     }
 
-    private void send(String str) {
+    private void send(String str1) {
+        String str="01fffffffffffffffc";
+//        String str ="5555080301e803094a07";
         if(!connected) {
             Toast.makeText(getActivity(), "not connected", Toast.LENGTH_SHORT).show();
             return;
         }
         try {
-        byte[] data = (str + '\n').getBytes();
+//            byte[] data = (str + '\n').getBytes();
+            byte[] data = ByteUtils.hexToByteArr(str);
             SpannableStringBuilder spn = new SpannableStringBuilder();
             spn.append("send " + data.length + " bytes\n");
             spn.append(HexDump.dumpHexString(data)).append("\n");
             spn.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorSendText)), 0, spn.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             receiveText.append(spn);
+
             usbSerialPort.write(data, WRITE_WAIT_MILLIS);
         } catch (Exception e) {
             onRunError(e);
         }
     }
+
+
+//    private void send(String str) {
+//        if(!connected) {
+//            Toast.makeText(getActivity(), "not connected", Toast.LENGTH_SHORT).show();
+//            return;
+//        }
+//        try {
+////            byte[] data = (str + '\n').getBytes();
+////            SpannableStringBuilder spn = new SpannableStringBuilder();
+////            spn.append("send " + data.length + " bytes\n");
+////            spn.append(HexDump.dumpHexString(data)).append("\n");
+////            spn.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorSendText)), 0, spn.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+////            receiveText.append(spn);
+//            String hex="02fffffffffffffffc";
+//            byte[] data = ByteUtils.hexToByteArr(hex);
+//            usbSerialPort.write(data, WRITE_WAIT_MILLIS);
+//        } catch (Exception e) {
+//            onRunError(e);
+//        }
+//    }
 
     private void read() {
         if(!connected) {

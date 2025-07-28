@@ -20,6 +20,33 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.EnumSet;
 
 /**
+ *
+ *  UsbSerialPort
+ * 功能： 定义了单个串口端口的接口，是串口通信的核心部分。
+ *
+ * 常量定义：
+ *
+ * 数据位（DATABITS_*）、停止位（STOPBITS_*）、奇偶校验（PARITY_*）等标准串口配置常量。
+ * 控制线（RTS、CTS 等）和流控模式（RTS_CTS、DTR_DSR 等）的枚举。
+ * 关键方法：
+ *
+ * 基本信息：
+ * getDriver()：返回该端口所使用的驱动。
+ * getDevice()：返回当前绑定的USB设备。
+ * getPortNumber()：返回端口号。
+ * 读写数据：
+ * read(byte[] dest, int timeout)：从串口读取数据到缓冲区。
+ * write(byte[] src, int timeout)：将缓冲区的数据写入串口。
+ * 串口参数：
+ * setParameters(int baudRate, int dataBits, int stopBits, int parity)：设置串口的波特率、数据位、停止位和校验。
+ * 控制功能：
+ * 例如 getRTS()、setRTS(boolean value) 用于获取或设置RTS信号。
+ * purgeHwBuffers(boolean purgeWriteBuffers, boolean purgeReadBuffers)：清空硬件读写缓冲区。
+ * 其他：
+ * open(UsbDeviceConnection connection)：打开端口。
+ * close()：关闭端口。
+ * isOpen()：检查端口是否处于打开状态。
+ * 应用场景： 提供对串口的直接操作（例如读取、写入和控制信号线），用于实现串口通信功能。
  * Interface for a single serial port.
  *
  * @author mike wakerly (opensource@hoho.com)

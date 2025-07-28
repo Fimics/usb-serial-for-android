@@ -32,11 +32,14 @@ import java.util.Map;
  */
 public class CdcAcmSerialDriver implements UsbSerialDriver {
 
+    //定义了 CDC/ACM 的子类代码值，用于识别设备是否符合 ACM 标准。
     public static final int USB_SUBCLASS_ACM = 2;
 
     private final String TAG = CdcAcmSerialDriver.class.getSimpleName();
 
+    //表示与驱动关联的 USB 设备。
     private final UsbDevice mDevice;
+    //表示该设备支持的串口端口列表。
     private final List<UsbSerialPort> mPorts;
 
     public CdcAcmSerialDriver(UsbDevice device) {
@@ -46,16 +49,30 @@ public class CdcAcmSerialDriver implements UsbSerialDriver {
         for (int port = 0; port < ports; port++) {
             mPorts.add(new CdcAcmSerialPort(mDevice, port));
         }
+        //如果 mPorts 的大小为 0（设备没有检测到端口），添加一个端口编号为 -1 的端口
         if (mPorts.size() == 0) {
             mPorts.add(new CdcAcmSerialPort(mDevice, -1));
         }
     }
 
+    /**
+     * 静态方法 probe 用于判断一个 USB 设备是否支持 CDC/ACM 协议。
+     * 内部调用 countPorts 方法，如果返回的端口数大于 0，表示设备支持。
+     * @param device
+     * @return
+     */
     @SuppressWarnings({"unused"})
     public static boolean probe(UsbDevice device) {
         return countPorts(device) > 0;
     }
 
+    /**
+     * 功能：检测设备中的 控制接口（COMM） 和 数据接口（CDC_DATA） 的数量。
+     * 如果设备的 InterfaceClass 和 InterfaceSubclass 符合条件，计数加 1。
+     * 返回控制接口和数据接口数量中的较小值，表示设备的端口数
+     * @param device
+     * @return
+     */
     private static int countPorts(UsbDevice device) {
         int controlInterfaceCount = 0;
         int dataInterfaceCount = 0;
@@ -81,6 +98,8 @@ public class CdcAcmSerialDriver implements UsbSerialDriver {
 
     public class CdcAcmSerialPort extends CommonUsbSerialPort {
 
+        //mControlInterface 和 mDataInterface：分别表示控制接口和数据接口。
+        //mControlEndpoint：表示控制端点
         private UsbInterface mControlInterface;
         private UsbInterface mDataInterface;
 
@@ -108,6 +127,12 @@ public class CdcAcmSerialDriver implements UsbSerialDriver {
             return CdcAcmSerialDriver.this;
         }
 
+        /**
+         * 功能：打开串口设备并完成必要的端口初始化。
+         * 如果端口号为 -1，调用 openSingleInterface（单接口模式）。
+         * 否则，调用 openInterface（默认接口逻辑）
+         * @throws IOException
+         */
         @Override
         protected void openInt() throws IOException {
             Log.d(TAG, "interfaces:");
@@ -123,6 +148,11 @@ public class CdcAcmSerialDriver implements UsbSerialDriver {
             }
         }
 
+        /**
+         * 设备可能使用同一个接口来处理控制和数据操作。
+         * 通过检查端点方向和类型，将合适的端点分配给 mControlEndpoint、mReadEndpoint 和 mWriteEndpoint
+         * @throws IOException
+         */
         private void openSingleInterface() throws IOException {
             // the following code is inspired by the cdc-acm driver in the linux kernel
 

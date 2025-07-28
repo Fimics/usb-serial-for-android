@@ -16,7 +16,7 @@ import java.util.List;
 
 /**
  *
- * @author mike wakerly (opensource@hoho.com)
+ * 用于检测和创建与USB设备相关的串口驱动的工具类，用于从USB设备中动态探测并初始化适合的串口驱动。
  */
 public class UsbSerialProber {
 
@@ -26,10 +26,18 @@ public class UsbSerialProber {
         mProbeTable = probeTable;
     }
 
+    /**
+     * 返回一个包含默认驱动程序的 UsbSerialProber 实例
+     * @return
+     */
     public static UsbSerialProber getDefaultProber() {
         return new UsbSerialProber(getDefaultProbeTable());
     }
-    
+
+    /**
+     * 返回一个包含默认驱动程序的 UsbSerialProber 实例
+     * @return
+     */
     public static ProbeTable getDefaultProbeTable() {
         final ProbeTable probeTable = new ProbeTable();
         probeTable.addDriver(CdcAcmSerialDriver.class);
@@ -50,6 +58,7 @@ public class UsbSerialProber {
      *
      * @param usbManager usb manager
      * @return a list, possibly empty, of all compatible drivers
+     * 扫描当前连接的USB设备，寻找兼容的串口驱动。
      */
     public List<UsbSerialDriver> findAllDrivers(final UsbManager usbManager) {
         final List<UsbSerialDriver> result = new ArrayList<>();
@@ -64,6 +73,7 @@ public class UsbSerialProber {
     }
     
     /**
+     * 针对单个USB设备，尝试查找一个兼容的串口驱动。如果找到，会实例化一个对应的 UsbSerialDriver 对象。
      * Probes a single device for a compatible driver.
      * 
      * @param usbDevice the usb device to probe

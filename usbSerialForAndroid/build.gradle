@@ -17,10 +17,7 @@ android {
                 'rfc2217_server_nonstandard_baudrates': 'true',   // true    false     false
         ]
     }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
+
     namespace 'com.hoho.android.usbserial'
     publishing {
         // if coverage is enabled, change 'release' to 'anyDeviceRelease' or comment out publishing rule

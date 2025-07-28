@@ -7,6 +7,18 @@
 package com.hoho.android.usbserial.driver;
 
 /**
+ * 功能： 提供常见USB设备的厂商ID和产品ID的常量表。
+ *
+ * 内容：
+ *
+ * 包含一系列 VENDOR_*（厂商ID） 和对应的 PRODUCT_*（产品ID）的常量，例如：
+ * VENDOR_FTDI = 0x0403（FTDI厂商ID）
+ * FTDI_FT232R = 0x6001（FTDI的FT232R芯片产品ID）
+ * 特点：
+ *
+ * 这些常量用于标识USB设备的具体型号和厂商。
+ * 类是不可实例化的（构造函数抛出异常 Non-instantiable class）。
+ * 应用场景： 用于通过厂商ID和产品ID识别具体的USB设备类型。
  * Registry of USB vendor/product ID constants.
  *
  * Culled from various sources; see
